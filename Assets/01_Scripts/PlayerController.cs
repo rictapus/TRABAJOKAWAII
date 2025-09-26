@@ -3,7 +3,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PlayerController : MonoBehaviour
 {
-
+    #region Movimiento
     [Header("Camara y movimiento")]
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
@@ -23,11 +23,13 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
+    #endregion
 
-
+    PlayerInventory playerInventory;
     private void Awake()
     {
         camTransform = GetComponentInChildren<Camera>().transform;
+        playerInventory = GameObject.Find("--INVENTORYMANAGER--").GetComponent<PlayerInventory>();
     }
 
     void Start()
@@ -73,5 +75,9 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         #endregion
-        }
+
+        #region Inventario
+        playerInventory.OpenInventoryUI();
+        #endregion
+    }
 }
