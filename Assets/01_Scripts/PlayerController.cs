@@ -3,6 +3,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PlayerController : MonoBehaviour
 {
+    #region Variables
     #region Movimiento
     [Header("Camara y movimiento")]
     public float walkSpeed = 5f;
@@ -25,11 +26,14 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     #endregion
 
-    PlayerInventory playerInventory;
+    public PlayerInventory pInventory;
+    #endregion
+
+    #region Awake & Start
     private void Awake()
     {
         camTransform = GetComponentInChildren<Camera>().transform;
-        playerInventory = GameObject.Find("--INVENTORYMANAGER--").GetComponent<PlayerInventory>();
+        pInventory = GameObject.Find("--INVENTORYMANAGER--").GetComponent<PlayerInventory>();
     }
 
     void Start()
@@ -39,7 +43,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
     }
+    #endregion
 
+    #region Update
     void Update()
     {
         #region Movimiento 
@@ -77,7 +83,19 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         #region Inventario
-        playerInventory.OpenInventoryUI();
+        pInventory.OpenInventoryUI();
         #endregion
     }
+    #endregion
+
+    #region Triggers
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<Item>())
+        {
+            pInventory.AddToInventory(other.GetComponent<Item>().itemData);
+            Destroy(other.gameObject);
+        }
+    }
+    #endregion
 }
