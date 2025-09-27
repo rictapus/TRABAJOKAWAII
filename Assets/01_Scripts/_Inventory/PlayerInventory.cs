@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
+[DisallowMultipleComponent]
+
 public class PlayerInventory : MonoBehaviour
 {
     public GameObject inventoryUI;
+    public ItemData[] item;
 
     public bool openInventory;
 
