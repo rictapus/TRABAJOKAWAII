@@ -33,13 +33,13 @@ public class PlayerInventory : MonoBehaviour
         {
             Destroy(this);
         }
+        UISlots = GameObject.Find("UIPlayerInventory").GetComponent<Transform>();
     }
 
     private void Start()
     {
         item = new ItemData[iSlots];
-        UISlots = GameObject.Find("UIPlayerInventory").GetComponent<Transform>();
-
+        UISlots.gameObject.gameObject.SetActive(false);
         for (int i = 0; i < iSlots; i++)
         {
             GameObject slot = Instantiate(slotPrefab, UISlots);
