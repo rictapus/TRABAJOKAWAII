@@ -1,34 +1,49 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class DroppedItem : MonoBehaviour
 {
-    #region Variables
-    bool autoStart;
-    public bool pickedUp = false;
-    [SerializeField] float enablePickupDelay = 3.0f;
-    public Item item;
-    #endregion
+    public float enablePickupDelay = 0.25f;
 
-    void Start()
-    {
-        if (autoStart && item != null)
-        {
-            Initialize(item);
-        }
-    }
+    Item item;
+    bool pickedUp;
 
     public void Initialize(Item item)
     {
         this.item = item;
-        var droppedItem = Instantiate(item.prefab, transform);
-        droppedItem.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+        if (item && item.prefab)
+        {
+            var visual = Instantiate(item.prefab, transform);
+            visual.transform.localPosition = Vector3.zero;
+            visual.transform.localRotation = Quaternion.identity;
+        }
+
+        var col = GetComponent<Collider>();
+        if (col) { col.isTrigger = true; col.enabled = false; } // evita recoger al instante
+
+        pickedUp = false;
         StartCoroutine(EnablePickup(enablePickupDelay));
     }
 
-    IEnumerator EnablePickup(float dealy)
+    IEnumerator EnablePickup(float delay)
     {
-        yield return new WaitForSeconds(dealy);
-        GetComponent<Collider>().enabled = true;
+        yield return new WaitForSeconds(delay);
+        var col = GetComponent<Collider>();
+        if (col) col.enabled = true;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (pickedUp || !item) return;
+
+        // Recoger si el que entra tiene Inventory (p.ej. el jugador)
+        var inv = other.GetComponentInParent<Inventory>();
+        if (!inv) return;
+
+        pickedUp = true;
+        inv.AddItem(item);
+        Destroy(gameObject);
     }
 }

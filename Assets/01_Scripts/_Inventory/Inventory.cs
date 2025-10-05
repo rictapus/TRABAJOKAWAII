@@ -1,50 +1,53 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
-using UnityEngine.Rendering;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    #region Variables
-    [SerializeField] InventoryUI ui;
-    [SerializeField] GameObject droppedItemPrefab;
-    [SerializeField] SerializedDictionary<string, Item> inventory = new();
+    [Header("UI")]
+    public InventoryUI ui; // Asigna en el Inspector
 
-    #endregion
+    [Header("Dropear")]
+    public GameObject droppedItemPrefab; // Prefab con DroppedItem + collider trigger
+
+    // Diccionario runtime (no serializado) clave->Item
+    private readonly Dictionary<string, Item> inventory = new Dictionary<string, Item>();
+
+    void Awake()
+    {
+        if (!ui) ui = FindAnyObjectByType<InventoryUI>();
+    }
 
     public void AddItem(Item item)
     {
-        if (inventory.ContainsKey(item.itemName))
-        {
-            var inventoryItemName = Guid.NewGuid().ToString();
-            inventory.Add(inventoryItemName, item);
-            ui.AddUIItem(inventoryItemName, item);
-        }
+        if (item == null) return;
+
+        // Clave base por nombre; si existe, añade GUID para permitir duplicados
+        string key = item.itemName;
+        if (inventory.ContainsKey(key))
+            key = $"{item.itemName}_{Guid.NewGuid()}";
+
+        inventory[key] = item;
+        if (ui) ui.AddUIItem(key, item);
     }
 
     public void DropItem(string inventoryItemName)
     {
-        var droppedItem = Instantiate(droppedItemPrefab, transform.position, Quaternion.identity).GetComponent<DroppedItem>();
-        var item = inventory.GetValueOrDefault(inventoryItemName);
-        droppedItem.Initialize(item);
-        inventory.Remove(inventoryItemName);
-        ui.RemoveUIItem(inventoryItemName);
-    }
+        if (!inventory.TryGetValue(inventoryItemName, out var item) || item == null)
+            return;
 
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("DroppedItem"))
+        if (!droppedItemPrefab)
         {
-            var droppedItem = other.GetComponent<DroppedItem>();
-
-            if (droppedItem.pickedUp)
-            {
-                return;
-            }
-
-            droppedItem.pickedUp = true;
-            AddItem(droppedItem.item);
-            Destroy(other.gameObject);
+            Debug.LogWarning("Inventory: droppedItemPrefab no asignado.");
+            return;
         }
+
+        Vector3 dropPos = transform.position + transform.forward * 0.75f;
+        var go = Instantiate(droppedItemPrefab, dropPos, Quaternion.identity);
+        var dropped = go.GetComponent<DroppedItem>();
+        if (dropped) dropped.Initialize(item);
+
+        inventory.Remove(inventoryItemName);
+        if (ui) ui.RemoveUIItem(inventoryItemName);
     }
 }

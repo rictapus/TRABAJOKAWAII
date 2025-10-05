@@ -541,13 +541,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed43cb21d3b9e73418df3a712b07784b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  interactor: {fileID: 0}
-  InteractorSource: {fileID: 1159652261}
-  InteractorRange: 0
-  throwForce: 600
-  maxDistance: 3
-  distance: 0
+  item: {fileID: 11400000, guid: 254fe3df336b90643bb1baaa5d764527, type: 2}
+  holdParent: {fileID: 2056177921}
+  holdDistance: 1.2
 --- !u!54 &485183668
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -777,12 +773,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3592ba6e6edade54fb31f9803966b44b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiItemPrefab: {fileID: 5772683612586671419, guid: 3fb7b20f917501b428a77cbf94190f0f, type: 3}
   inventory: {fileID: 1472873465}
   uiInventoryParent: {fileID: 561660853}
-  inventoryUI:
-    m_Keys: []
-    m_Values: []
+  uiItemPrefab: {fileID: 5772683612586671419, guid: 3fb7b20f917501b428a77cbf94190f0f, type: 3}
 --- !u!1 &613511465
 GameObject:
   m_ObjectHideFlags: 0
@@ -1148,9 +1141,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ui: {fileID: 561660857}
   droppedItemPrefab: {fileID: 3728502987230989219, guid: 3895f9007367d954aa20a9812d5b9aaf, type: 3}
-  inventory:
-    m_Keys: []
-    m_Values: []
 --- !u!1 &1829557500
 GameObject:
   m_ObjectHideFlags: 0
@@ -1282,6 +1272,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1319403941581215206, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 1472873465}
     - target: {fileID: 1319403941581215206, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
       propertyPath: pInventory
       value: 

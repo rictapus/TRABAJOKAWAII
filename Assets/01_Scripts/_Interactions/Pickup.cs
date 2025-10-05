@@ -1,134 +1,86 @@
-using System.Security.Cryptography;
 using UnityEngine;
 
-public class Pickup : MonoBehaviour, IInteractable
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Rigidbody))]
+public class Pickup : MonoBehaviour
 {
-    #region Variables
+    [Header("Datos del �tem")]
+    public Item item;                    // Asigna tu ScriptableObject de �tem
 
-    #region Var Interact
-    public Item item;
-    public Interactor interactor;
-    public Transform InteractorSource;
-    public float InteractorRange;
-    Inventory inventory;
-    #endregion
+    [Header("Sujeci�n")]
+    public Transform holdParent;         // Opcional (si no se asigna, usa la c�mara principal)
+    public float holdDistance = 1.2f;    // Distancia delante de la c�mara al sostener
 
-    #region Var Pickup
-    bool isHolding = false;
-    [SerializeField] float throwForce = 600f;
-    [SerializeField] float maxDistance = 3f;
-    [SerializeField] float distance;
-
-    TempParent tempParent;
     Rigidbody rb;
-    Vector3 objectPos;
-    #endregion
-    #endregion
+    bool isHolding;
 
-    #region Awake & Start
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        inventory = GetComponent<Inventory>();
+        if (!GetComponent<Collider>().isTrigger)
+            GetComponent<Collider>().isTrigger = false; // este objeto se agarra con rat�n, no trigger
     }
 
-    void Start()
-    {
-        tempParent = TempParent.Instance;
-    }
-    #endregion
-
-    #region Update
     void Update()
     {
+        // Seguir la mano/c�mara al sostener
         if (isHolding)
         {
-            Hold();
-        }
-    }
-    #endregion
-
-    #region Interact
-    public void Interact()
-    {
-        if (inventory == null)
-        {
-            inventory = FindFirstObjectByType<Inventory>();
-        }
-
-        if (inventory != null)
-        {
-            inventory.AddItem(item);
-            Destroy(gameObject);
-        }
-        else
-        {
-            Debug.LogWarning("No se encontro el PlayerInventory en la escena");
-        }
-    }
-    #endregion
-
-    #region Mouse Events
-    private void OnMouseDown()
-    {
-        if (tempParent != null)
-        {
-            distance = Vector3.Distance(this.transform.position, tempParent.transform.position);
-
-            if (distance <= maxDistance)
+            Transform targetParent = holdParent ? holdParent : Camera.main?.transform;
+            if (targetParent)
             {
-                isHolding = true;
-                rb.useGravity = false;
-                rb.detectCollisions = true;
-
-                this.transform.SetParent(tempParent.transform);
+                Vector3 targetPos = targetParent.position + targetParent.forward * holdDistance;
+                transform.position = targetPos;
+                transform.rotation = Quaternion.LookRotation(targetParent.forward, Vector3.up);
             }
-        }
-        else
-        {
-            Debug.Log("No se encontro el TempParent en la escena");
+
+            // Agregar al inventario al presionar E
+            if (Input.GetKeyDown(KeyCode.E))
+                TryAddToInventory();
         }
     }
 
-    private void OnMouseUp()
+    // Agarrar con mouse (puedes reemplazar esto por tu Interactor si quieres)
+    void OnMouseDown() { Hold(); }
+    void OnMouseUp() { Drop(); }
+    // Evita soltar por OnMouseExit (provoca soltadas accidentales)
+
+    void Hold()
     {
-        Drop();
-    }
-
-    private void OnMouseExit()
-    {
-        Drop();
-    }
-
-    private void Hold()
-    {
-        distance = Vector3.Distance(this.transform.position, tempParent.transform.position);
-
-        if (distance >= maxDistance)
-        {
-            Drop();
-        }
-
+        isHolding = true;
+        rb.isKinematic = true;
+        rb.useGravity = false;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            rb.AddForce(tempParent.transform.forward * throwForce);
-            Drop();
-        }
+        if (holdParent)
+            transform.SetParent(holdParent, true);
     }
 
-    private void Drop()
+    void Drop()
     {
-        if (isHolding)
-        {
-            isHolding = false;
-            objectPos = this.transform.position;
-            this.transform.position = objectPos;
-            this.transform.SetParent(null);
-            rb.useGravity = true;
-        }
+        isHolding = false;
+        if (transform.parent == holdParent) transform.SetParent(null, true);
+        rb.isKinematic = false;
+        rb.useGravity = true;
     }
-    #endregion
+
+    void TryAddToInventory()
+    {
+        if (item == null)
+        {
+            Debug.LogWarning($"Pickup '{name}' sin Item asignado.");
+            return;
+        }
+
+        var inv = FindAnyObjectByType<Inventory>();
+        if (!inv)
+        {
+            Debug.LogWarning("No se encontr� un Inventory en la escena.");
+            return;
+        }
+
+        inv.AddItem(item);
+        Destroy(gameObject); // quitar del mundo al guardarlo
+    }
 }

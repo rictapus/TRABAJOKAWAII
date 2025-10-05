@@ -1,31 +1,43 @@
-using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Rendering;
-using JetBrains.Annotations;
+using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
-    #region Variables
-    [SerializeField] GameObject uiItemPrefab;
-    [SerializeField] Inventory inventory;
-    [SerializeField] Transform uiInventoryParent;
-    [SerializeField] SerializedDictionary<string, GameObject> inventoryUI = new();
-    #endregion
+    [Header("Referencias")]
+    public Inventory inventory;          // Asigna en Inspector
+    public Transform uiInventoryParent;  // Contenedor (p.ej. un GridLayout en el Canvas)
+    public GameObject uiItemPrefab;      // Prefab con ItemUI (Image + Button)
 
-    public void AddUIItem (string inventoryItemName, Item item)
+    // clave -> GO de UI
+    private readonly Dictionary<string, GameObject> inventoryUI = new Dictionary<string, GameObject>();
+
+    public void AddUIItem(string inventoryItemName, Item item)
     {
-        var itemIU = Instantiate(uiItemPrefab).GetComponent<ItemUI>();
-        itemIU.transform.SetParent(uiInventoryParent);
-        inventoryUI.Add(inventoryItemName, itemIU.gameObject);
-        itemIU.Initialize(inventoryItemName, item, inventory.DropItem);
+        if (!uiItemPrefab || !uiInventoryParent)
+        {
+            Debug.LogError("InventoryUI: Asigna uiItemPrefab y uiInventoryParent.");
+            return;
+        }
 
+        var go = Object.Instantiate(uiItemPrefab, uiInventoryParent);
+        var itemUI = go.GetComponent<ItemUI>();
+        if (!itemUI)
+        {
+            Debug.LogError("InventoryUI: uiItemPrefab no tiene ItemUI.");
+            Destroy(go);
+            return;
+        }
+
+        inventoryUI[inventoryItemName] = go;
+        itemUI.Initialize(inventoryItemName, item, inventory.DropItem);
     }
 
     public void RemoveUIItem(string inventoryItemName)
     {
-        var itemUI = inventoryUI.GetValueOrDefault(inventoryItemName);
-        inventoryUI.Remove(inventoryItemName);
-        Destroy(itemUI);
+        if (inventoryUI.TryGetValue(inventoryItemName, out var go) && go)
+        {
+            Destroy(go);
+            inventoryUI.Remove(inventoryItemName);
+        }
     }
 }
-    
