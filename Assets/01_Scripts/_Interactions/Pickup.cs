@@ -6,11 +6,11 @@ public class Pickup : MonoBehaviour, IInteractable
     #region Variables
 
     #region Var Interact
-    public ItemData itemData;
+    public Item item;
     public Interactor interactor;
     public Transform InteractorSource;
     public float InteractorRange;
-    PlayerInventory playerInventory;
+    Inventory inventory;
     #endregion
 
     #region Var Pickup
@@ -29,7 +29,7 @@ public class Pickup : MonoBehaviour, IInteractable
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        playerInventory = GetComponent<PlayerInventory>();
+        inventory = GetComponent<Inventory>();
     }
 
     void Start()
@@ -51,14 +51,14 @@ public class Pickup : MonoBehaviour, IInteractable
     #region Interact
     public void Interact()
     {
-        if (playerInventory == null)
+        if (inventory == null)
         {
-            playerInventory = FindFirstObjectByType<PlayerInventory>();
+            inventory = FindFirstObjectByType<Inventory>();
         }
 
-        if (playerInventory != null)
+        if (inventory != null)
         {
-            playerInventory.AddToInventory(itemData);
+            inventory.AddItem(item);
             Destroy(gameObject);
         }
         else

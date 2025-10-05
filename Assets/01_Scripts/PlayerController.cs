@@ -26,14 +26,14 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     #endregion
 
-    public PlayerInventory pInventory;
+    public Inventory inventory;
     #endregion
 
     #region Awake & Start
     private void Awake()
     {
         camTransform = GetComponentInChildren<Camera>().transform;
-        pInventory = GameObject.Find("--INVENTORYMANAGER--").GetComponent<PlayerInventory>();
+        inventory = GetComponent<Inventory>();
     }
 
     void Start()
@@ -83,19 +83,11 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         #region Inventario
-        pInventory.OpenInventoryUI();
+        //inventory.OpenInventoryUI();
         #endregion
     }
     #endregion
 
     #region Triggers
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.GetComponent<Item>())
-        {
-            pInventory.AddToInventory(other.GetComponent<Item>().itemData);
-            Destroy(other.gameObject);
-        }
-    }
     #endregion
 }

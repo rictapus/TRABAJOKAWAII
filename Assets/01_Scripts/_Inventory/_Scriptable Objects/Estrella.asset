@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1da33a8c246c93c438c7a7e9dbaa3b55, type: 3}
-  m_Name: ItemData
+  m_Script: {fileID: 11500000, guid: 1182f6ce2b6b0484093732ccbec2dcb1, type: 3}
+  m_Name: Estrella
   m_EditorClassIdentifier: 
   itemName: Estrella
-  itemIcon: {fileID: 21300000, guid: dd3d43a9d509fdf4da8703123fc4f5db, type: 3}
+  icon: {fileID: 21300000, guid: 3248323ecd5915d4ba59f44a23d1a62a, type: 3}
+  prefab: {fileID: 6583554224949020861, guid: 1f86637b835a4c14d8c120855a8587a9, type: 3}
