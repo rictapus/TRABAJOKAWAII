@@ -1,10 +1,20 @@
+using System.Security.Cryptography;
 using UnityEngine;
 
-public class Pickup : MonoBehaviour
+public class Pickup : MonoBehaviour, IInteractable
 {
     #region Variables
-    bool isHolding = false;
 
+    #region Var Interact
+    public ItemData itemData;
+    public Interactor interactor;
+    public Transform InteractorSource;
+    public float InteractorRange;
+    PlayerInventory playerInventory;
+    #endregion
+
+    #region Var Pickup
+    bool isHolding = false;
     [SerializeField] float throwForce = 600f;
     [SerializeField] float maxDistance = 3f;
     [SerializeField] float distance;
@@ -13,11 +23,13 @@ public class Pickup : MonoBehaviour
     Rigidbody rb;
     Vector3 objectPos;
     #endregion
+    #endregion
 
     #region Awake & Start
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        playerInventory = GetComponent<PlayerInventory>();
     }
 
     void Start()
@@ -32,6 +44,26 @@ public class Pickup : MonoBehaviour
         if (isHolding)
         {
             Hold();
+        }
+    }
+    #endregion
+
+    #region Interact
+    public void Interact()
+    {
+        if (playerInventory == null)
+        {
+            playerInventory = FindFirstObjectByType<PlayerInventory>();
+        }
+
+        if (playerInventory != null)
+        {
+            playerInventory.AddToInventory(itemData);
+            Destroy(gameObject);
+        }
+        else
+        {
+            Debug.LogWarning("No se encontro el PlayerInventory en la escena");
         }
     }
     #endregion

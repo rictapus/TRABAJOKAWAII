@@ -591,6 +591,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed43cb21d3b9e73418df3a712b07784b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: e25d7f9c1ac0dfb4bab52b1d740dd8be, type: 2}
+  interactor: {fileID: 0}
+  InteractorSource: {fileID: 1159652261}
+  InteractorRange: 0
   throwForce: 600
   maxDistance: 3
   distance: 0
@@ -999,30 +1003,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944628150}
   m_CullTransparentMesh: 1
---- !u!1 &1159652260 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5742850362131828681, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
-  m_PrefabInstance: {fileID: 1457839692657506239}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1159652261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4207599876706427852, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
   m_PrefabInstance: {fileID: 1457839692657506239}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1159652266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1159652260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d63d975b2387ad04cb345b6c4af063b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InteractorSource: {fileID: 0}
-  InteractorRange: 0
 --- !u!1 &1410090615
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,6 +1146,25 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!1 &1472873458 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7021708076807197827, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
+  m_PrefabInstance: {fileID: 1457839692657506239}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1472873464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472873458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d63d975b2387ad04cb345b6c4af063b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractorSource: {fileID: 1159652261}
+  InteractorRange: 5
 --- !u!1 &1829557500
 GameObject:
   m_ObjectHideFlags: 0
@@ -1470,9 +1474,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2056177921}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5742850362131828681, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 7021708076807197827, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1159652266}
+      addedObject: {fileID: 1472873464}
   m_SourcePrefab: {fileID: 100100000, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
 --- !u!1001 &3834320553972245823
 PrefabInstance:
