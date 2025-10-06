@@ -5,7 +5,7 @@ public class InventoryUI : MonoBehaviour
 {
     [Header("Referencias")]
     public Inventory inventory;          // Asigna en Inspector
-    public Transform uiInventoryParent;  // Contenedor (p.ej. un GridLayout en el Canvas)
+    public Transform uiInventoryParent;  // Contenedor (Grid/VerticalLayout en el Canvas)
     public GameObject uiItemPrefab;      // Prefab con ItemUI (Image + Button)
 
     // clave -> GO de UI
@@ -19,7 +19,7 @@ public class InventoryUI : MonoBehaviour
             return;
         }
 
-        var go = Object.Instantiate(uiItemPrefab, uiInventoryParent);
+        var go = Instantiate(uiItemPrefab, uiInventoryParent);
         var itemUI = go.GetComponent<ItemUI>();
         if (!itemUI)
         {
@@ -29,7 +29,14 @@ public class InventoryUI : MonoBehaviour
         }
 
         inventoryUI[inventoryItemName] = go;
-        itemUI.Initialize(inventoryItemName, item, inventory.DropItem);
+
+        // Pasa ambas acciones: eliminar (drop) y seleccionar (hover)
+        itemUI.Initialize(
+            inventoryItemName,
+            item,
+            inventory.DropItem,     // click en el botón del ítem = dropear
+            inventory.SelectItem    // hover del ítem = seleccionarlo para soltar con Q
+        );
     }
 
     public void RemoveUIItem(string inventoryItemName)

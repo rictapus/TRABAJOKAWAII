@@ -1,86 +1,151 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
-[RequireComponent(typeof(Rigidbody))]
-public class Pickup : MonoBehaviour
+public class Pickup : MonoBehaviour, IInteractable
 {
-    [Header("Datos del �tem")]
-    public Item item;                    // Asigna tu ScriptableObject de �tem
+    #region Variables
 
-    [Header("Sujeci�n")]
-    public Transform holdParent;         // Opcional (si no se asigna, usa la c�mara principal)
-    public float holdDistance = 1.2f;    // Distancia delante de la c�mara al sostener
+    #region Var Interact
+    public Item item;
+    public Interactor interactor;      // (no se usa aquí, se mantiene por tu lógica)
+    public Transform InteractorSource; // (no se usa aquí, se mantiene por tu lógica)
+    public float InteractorRange;      // (no se usa aquí, se mantiene por tu lógica)
+    Inventory inventory;
+    #endregion
 
+    #region Var Pickup
+    bool isHolding = false;
+    [SerializeField] float throwForce = 600f;
+    [SerializeField] float maxDistance = 3f;
+    [SerializeField] float distance;
+
+    TempParent tempParent;
     Rigidbody rb;
-    bool isHolding;
+    Vector3 objectPos;
+    #endregion
+    #endregion
 
+    #region Awake & Start
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        if (!GetComponent<Collider>().isTrigger)
-            GetComponent<Collider>().isTrigger = false; // este objeto se agarra con rat�n, no trigger
+        inventory = GetComponent<Inventory>(); // si no hay Inventory aquí, se busca en Interact()
     }
 
+    void Start()
+    {
+        tempParent = TempParent.Instance;
+    }
+    #endregion
+
+    #region Update
     void Update()
     {
-        // Seguir la mano/c�mara al sostener
         if (isHolding)
         {
-            Transform targetParent = holdParent ? holdParent : Camera.main?.transform;
-            if (targetParent)
-            {
-                Vector3 targetPos = targetParent.position + targetParent.forward * holdDistance;
-                transform.position = targetPos;
-                transform.rotation = Quaternion.LookRotation(targetParent.forward, Vector3.up);
-            }
+            Hold();
 
-            // Agregar al inventario al presionar E
+            // >>> AÑADIDO: recoger al INVENTARIO al presionar E mientras sostienes <<<
             if (Input.GetKeyDown(KeyCode.E))
-                TryAddToInventory();
+            {
+                Interact(); // usa tu misma lógica de Interact para agregar al inventario
+            }
         }
     }
+    #endregion
 
-    // Agarrar con mouse (puedes reemplazar esto por tu Interactor si quieres)
-    void OnMouseDown() { Hold(); }
-    void OnMouseUp() { Drop(); }
-    // Evita soltar por OnMouseExit (provoca soltadas accidentales)
-
-    void Hold()
+    #region Interact
+    public void Interact()
     {
-        isHolding = true;
-        rb.isKinematic = true;
-        rb.useGravity = false;
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        // Asegura que hay un Inventory de jugador
+        if (inventory == null)
+        {
+            inventory = FindFirstObjectByType<Inventory>();
+        }
 
-        if (holdParent)
-            transform.SetParent(holdParent, true);
-    }
-
-    void Drop()
-    {
-        isHolding = false;
-        if (transform.parent == holdParent) transform.SetParent(null, true);
-        rb.isKinematic = false;
-        rb.useGravity = true;
-    }
-
-    void TryAddToInventory()
-    {
         if (item == null)
         {
-            Debug.LogWarning($"Pickup '{name}' sin Item asignado.");
+            Debug.LogWarning("Pickup: 'item' no asignado en el objeto.");
             return;
         }
 
-        var inv = FindAnyObjectByType<Inventory>();
-        if (!inv)
+        if (inventory != null)
         {
-            Debug.LogWarning("No se encontr� un Inventory en la escena.");
-            return;
+            // Si lo estás sosteniendo, suéltalo antes de destruir (mantiene tu flujo limpio)
+            if (isHolding) Drop();
+
+            inventory.AddItem(item);
+            Destroy(gameObject);
+        }
+        else
+        {
+            Debug.LogWarning("No se encontro el PlayerInventory en la escena");
+        }
+    }
+    #endregion
+
+    #region Mouse Events
+    private void OnMouseDown()
+    {
+        if (tempParent != null)
+        {
+            distance = Vector3.Distance(this.transform.position, tempParent.transform.position);
+
+            if (distance <= maxDistance)
+            {
+                isHolding = true;
+                rb.useGravity = false;
+                rb.detectCollisions = true;
+
+                this.transform.SetParent(tempParent.transform);
+            }
+        }
+        else
+        {
+            Debug.Log("No se encontro el TempParent en la escena");
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        Drop();
+    }
+
+    private void OnMouseExit()
+    {
+        Drop();
+    }
+
+    private void Hold()
+    {
+        distance = Vector3.Distance(this.transform.position, tempParent.transform.position);
+
+        if (distance >= maxDistance)
+        {
+            Drop();
         }
 
-        inv.AddItem(item);
-        Destroy(gameObject); // quitar del mundo al guardarlo
+        // FIX: Unity no tiene linearVelocity
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        // Click derecho: lanzar y soltar (manteniendo tu lógica)
+        if (Input.GetMouseButtonDown(1))
+        {
+            rb.AddForce(tempParent.transform.forward * throwForce);
+            Drop();
+        }
     }
+
+    private void Drop()
+    {
+        if (isHolding)
+        {
+            isHolding = false;
+            objectPos = this.transform.position;
+            this.transform.position = objectPos;
+            this.transform.SetParent(null);
+            rb.useGravity = true;
+        }
+    }
+    #endregion
 }

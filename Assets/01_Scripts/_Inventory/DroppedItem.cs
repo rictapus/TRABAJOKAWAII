@@ -4,15 +4,20 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class DroppedItem : MonoBehaviour
 {
-    public float enablePickupDelay = 0.25f;
+    [Header("Pickup")]
+    public float enablePickupDelay = 0.25f;   // tiempo antes de permitir recoger
 
-    Item item;
-    bool pickedUp;
+    private Item item;
+    private bool canPickup;                   // tras el delay
+    private bool playerInZone;                // jugador dentro del trigger
+    private bool pickedUp;                    // evita duplicados
+    private Inventory playerInventory;        // cache del inventory del jugador
 
     public void Initialize(Item item)
     {
         this.item = item;
 
+        // Visual
         if (item && item.prefab)
         {
             var visual = Instantiate(item.prefab, transform);
@@ -20,30 +25,76 @@ public class DroppedItem : MonoBehaviour
             visual.transform.localRotation = Quaternion.identity;
         }
 
+        // Configurar collider
         var col = GetComponent<Collider>();
-        if (col) { col.isTrigger = true; col.enabled = false; } // evita recoger al instante
+        if (col)
+        {
+            col.isTrigger = true;
+            col.enabled = false;              // deshabilitado hasta pasar el delay
+        }
 
+        canPickup = false;
+        playerInZone = false;
         pickedUp = false;
-        StartCoroutine(EnablePickup(enablePickupDelay));
+        playerInventory = null;
+
+        StartCoroutine(EnablePickupAfterDelay(enablePickupDelay));
     }
 
-    IEnumerator EnablePickup(float delay)
+    IEnumerator EnablePickupAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         var col = GetComponent<Collider>();
         if (col) col.enabled = true;
+        canPickup = true;
+    }
+
+    void Update()
+    {
+        // Recoger SOLO si: puede recogerse, el jugador está en zona y presiona E
+        if (canPickup && playerInZone && !pickedUp && Input.GetKeyDown(KeyCode.E))
+        {
+            TryPickup();
+        }
+    }
+
+    void TryPickup()
+    {
+        if (pickedUp) return;
+        if (!item) return;
+        if (!playerInventory)
+        {
+            Debug.LogWarning("DroppedItem: no se encontró Inventory en el jugador.");
+            return;
+        }
+
+        pickedUp = true;
+        playerInventory.AddItem(item);
+        Destroy(gameObject);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (pickedUp || !item) return;
+        if (!canPickup || pickedUp) return;
 
-        // Recoger si el que entra tiene Inventory (p.ej. el jugador)
+        // Detecta al jugador y cachea su Inventory
+        if (other.CompareTag("Player") || other.GetComponentInParent<Inventory>())
+        {
+            playerInventory = other.GetComponentInParent<Inventory>();
+            if (playerInventory)
+                playerInZone = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!playerInZone) return;
+
         var inv = other.GetComponentInParent<Inventory>();
-        if (!inv) return;
-
-        pickedUp = true;
-        inv.AddItem(item);
-        Destroy(gameObject);
+        if (inv && inv == playerInventory)
+        {
+            playerInZone = false;
+            playerInventory = null;
+        }
     }
 }
