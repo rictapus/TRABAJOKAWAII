@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     public Inventory inventory;
+    [SerializeField] Collider playerDetection;
     #endregion
 
     #region Awake & Start
@@ -79,6 +80,22 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+        #endregion
+
+        #region Noob Salvation
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            playerDetection.enabled = !playerDetection.enabled;
+
+            if (!playerDetection.enabled)
+            {
+
+                foreach (EnemyController enemy in FindObjectsByType<EnemyController>(FindObjectsSortMode.None))
+                {
+                  enemy.LosePlayer();
+                }
+            }
         }
         #endregion
     }

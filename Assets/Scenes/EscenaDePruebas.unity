@@ -857,6 +857,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1472873458}
   respawnPoint: {fileID: 1786116969}
+--- !u!136 &904486154 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 9049895706881384154, guid: e07cc70f55962fe46ae2cc25679247d7, type: 3}
+  m_PrefabInstance: {fileID: 3834320553972245823}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &904486157 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 4819307280514191717, guid: e07cc70f55962fe46ae2cc25679247d7, type: 3}
+  m_PrefabInstance: {fileID: 3834320553972245823}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &944628150
 GameObject:
   m_ObjectHideFlags: 0
@@ -1008,6 +1018,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ui: {fileID: 561660857}
   droppedItemPrefab: {fileID: 1980017033923134054, guid: 4f1e90c7957e0404dad63c3fbea0eb6c, type: 3}
+--- !u!65 &1760775898 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 2211624886030723955, guid: 4f1e90c7957e0404dad63c3fbea0eb6c, type: 3}
+  m_PrefabInstance: {fileID: 2376947743940691861}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1786116969
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178,6 +1193,14 @@ PrefabInstance:
       propertyPath: pInventory
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1319403941581215206, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
+      propertyPath: enemyCollider
+      value: 
+      objectReference: {fileID: 1760775898}
+    - target: {fileID: 1319403941581215206, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
+      propertyPath: playerDetection
+      value: 
+      objectReference: {fileID: 904486154}
     - target: {fileID: 6641515504060063324, guid: 1c7cac015274e824a9de6f3051cf3708, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.08
@@ -1370,6 +1393,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1423618436}
+    - target: {fileID: 3598826193969229241, guid: e07cc70f55962fe46ae2cc25679247d7, type: 3}
+      propertyPath: enemyCollider
+      value: 
+      objectReference: {fileID: 904486157}
+    - target: {fileID: 3598826193969229241, guid: e07cc70f55962fe46ae2cc25679247d7, type: 3}
+      propertyPath: playerDetection
+      value: 
+      objectReference: {fileID: 904486154}
     - target: {fileID: 3598826193969229241, guid: e07cc70f55962fe46ae2cc25679247d7, type: 3}
       propertyPath: 'waypoint.Array.data[0]'
       value: 

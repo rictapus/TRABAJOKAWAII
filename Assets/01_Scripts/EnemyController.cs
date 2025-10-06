@@ -106,6 +106,13 @@ public class EnemyController : MonoBehaviour
     }
     #endregion
 
+    public void LosePlayer()
+    {
+        hasdDetectedPlayer = false;
+        player = null;
+        ChangeEnemyState(EnemyPatrolState.Idle);
+    }
+
     void ChangeEnemyState(EnemyPatrolState newState)
     {
         currentState = newState;
@@ -116,14 +123,6 @@ public class EnemyController : MonoBehaviour
     }
 
     #region Collisions & Triggers
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.name == "Player")
-        {
-
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.name == "Player")

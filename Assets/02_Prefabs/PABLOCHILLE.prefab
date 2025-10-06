@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 7682767536511957871}
   - component: {fileID: 7024323515677862523}
   - component: {fileID: 8972654890642367273}
+  - component: {fileID: 9049895706881384154}
   - component: {fileID: 4819307280514191717}
   - component: {fileID: 4639772280596830912}
   - component: {fileID: 3598826193969229241}
-  - component: {fileID: 9049895706881384154}
   m_Layer: 0
   m_Name: PABLOCHILLE
   m_TagString: Untagged
@@ -90,6 +90,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &9049895706881384154
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8228165740421548113}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 5.346881
+  m_Height: 10.693762
+  m_Direction: 1
+  m_Center: {x: 0.06526375, y: 0, z: 0}
 --- !u!65 &4819307280514191717
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -152,26 +175,3 @@ MonoBehaviour:
   nextWaypoint: 0
   idleTimer: 2
   player: {fileID: 0}
---- !u!136 &9049895706881384154
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8228165740421548113}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 5.346881
-  m_Height: 10.693762
-  m_Direction: 1
-  m_Center: {x: 0.06526375, y: 0, z: 0}
