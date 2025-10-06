@@ -9,7 +9,7 @@ public class EnemyController : MonoBehaviour
 {
     #region Variables
     NavMeshAgent agent;
-    public Animator anim;
+    //public Animator anim;
     [SerializeField] Transform[] waypoint;
     [SerializeField] int nextWaypoint;
     [SerializeField] float idleTimer = 2;
@@ -62,7 +62,7 @@ public class EnemyController : MonoBehaviour
             #region Walking State
             case EnemyPatrolState.Walking:
 
-                anim.SetBool("isWalking", true);
+                //anim.SetBool("isWalking", true);
                 if (hasdDetectedPlayer)
                 {
                     ChangeEnemyState(EnemyPatrolState.Chase);
@@ -91,7 +91,7 @@ public class EnemyController : MonoBehaviour
             case EnemyPatrolState.Chase:
                 if (hasdDetectedPlayer)
                 {
-                    anim.SetBool("isRunning", true);
+                    //anim.SetBool("isRunning", true);
                     agent.SetDestination(player.position);
                 }
                 else
@@ -127,6 +127,15 @@ public class EnemyController : MonoBehaviour
     }
 
     #region Collisions & Triggers
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Medicine"))
+        {
+            agent.isStopped = true;
+            //anim.SetBool("isDead", true);
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.name == "Player")
