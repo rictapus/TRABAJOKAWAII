@@ -115,7 +115,15 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    #region Triggers
+    #region Collisions & Triggers
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "Player")
+        {
+
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.name == "Player")

@@ -81,13 +81,13 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         #endregion
-
-        #region Inventario
-        //inventory.OpenInventoryUI();
-        #endregion
     }
     #endregion
 
-    #region Triggers
+    #region Collisions & Triggers
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+    }
     #endregion
 }
