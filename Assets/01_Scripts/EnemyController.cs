@@ -9,6 +9,7 @@ public class EnemyController : MonoBehaviour
 {
     #region Variables
     NavMeshAgent agent;
+    public Animator anim;
     [SerializeField] Transform[] waypoint;
     [SerializeField] int nextWaypoint;
     [SerializeField] float idleTimer = 2;
@@ -60,6 +61,8 @@ public class EnemyController : MonoBehaviour
 
             #region Walking State
             case EnemyPatrolState.Walking:
+
+                anim.SetBool("isWalking", true);
                 if (hasdDetectedPlayer)
                 {
                     ChangeEnemyState(EnemyPatrolState.Chase);
@@ -88,6 +91,7 @@ public class EnemyController : MonoBehaviour
             case EnemyPatrolState.Chase:
                 if (hasdDetectedPlayer)
                 {
+                    anim.SetBool("isRunning", true);
                     agent.SetDestination(player.position);
                 }
                 else
