@@ -4,20 +4,29 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class DroppedItem : MonoBehaviour
 {
-    [Header("Pickup")]
-    public float enablePickupDelay = 0.25f;   // tiempo antes de permitir recoger
-
+    #region Variables
+    public float enablePickupDelay = 0.25f;
     private Item item;
-    private bool canPickup;                   // tras el delay
-    private bool playerInZone;                // jugador dentro del trigger
-    private bool pickedUp;                    // evita duplicados
-    private Inventory playerInventory;        // cache del inventory del jugador
+    private bool canPickup;          
+    private bool playerInZone;    
+    private bool pickedUp;            
+    private Inventory playerInventory;
+    #endregion
+
+    #region Update
+    void Update()
+    {
+        if (canPickup && playerInZone && !pickedUp && Input.GetKeyDown(KeyCode.E))
+        {
+            TryPickup();
+        }
+    }
+    #endregion
 
     public void Initialize(Item item)
     {
         this.item = item;
 
-        // Visual
         if (item && item.prefab)
         {
             var visual = Instantiate(item.prefab, transform);
@@ -25,12 +34,11 @@ public class DroppedItem : MonoBehaviour
             visual.transform.localRotation = Quaternion.identity;
         }
 
-        // Configurar collider
         var col = GetComponent<Collider>();
         if (col)
         {
             col.isTrigger = true;
-            col.enabled = false;              // deshabilitado hasta pasar el delay
+            col.enabled = false;      
         }
 
         canPickup = false;
@@ -49,22 +57,12 @@ public class DroppedItem : MonoBehaviour
         canPickup = true;
     }
 
-    void Update()
-    {
-        // Recoger SOLO si: puede recogerse, el jugador está en zona y presiona E
-        if (canPickup && playerInZone && !pickedUp && Input.GetKeyDown(KeyCode.E))
-        {
-            TryPickup();
-        }
-    }
-
     void TryPickup()
     {
         if (pickedUp) return;
         if (!item) return;
         if (!playerInventory)
         {
-            Debug.LogWarning("DroppedItem: no se encontró Inventory en el jugador.");
             return;
         }
 
@@ -73,11 +71,11 @@ public class DroppedItem : MonoBehaviour
         Destroy(gameObject);
     }
 
+    #region Triggers
     void OnTriggerEnter(Collider other)
     {
         if (!canPickup || pickedUp) return;
 
-        // Detecta al jugador y cachea su Inventory
         if (other.CompareTag("Player") || other.GetComponentInParent<Inventory>())
         {
             playerInventory = other.GetComponentInParent<Inventory>();
@@ -97,4 +95,5 @@ public class DroppedItem : MonoBehaviour
             playerInventory = null;
         }
     }
+    #endregion
 }

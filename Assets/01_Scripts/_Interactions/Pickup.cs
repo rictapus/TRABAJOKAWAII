@@ -6,9 +6,9 @@ public class Pickup : MonoBehaviour, IInteractable
 
     #region Var Interact
     public Item item;
-    public Interactor interactor;      // (no se usa aquí, se mantiene por tu lógica)
-    public Transform InteractorSource; // (no se usa aquí, se mantiene por tu lógica)
-    public float InteractorRange;      // (no se usa aquí, se mantiene por tu lógica)
+    public Interactor interactor;      
+    public Transform InteractorSource;
+    public float InteractorRange;      
     Inventory inventory;
     #endregion
 
@@ -28,7 +28,7 @@ public class Pickup : MonoBehaviour, IInteractable
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        inventory = GetComponent<Inventory>(); // si no hay Inventory aquí, se busca en Interact()
+        inventory = GetComponent<Inventory>(); 
     }
 
     void Start()
@@ -44,10 +44,9 @@ public class Pickup : MonoBehaviour, IInteractable
         {
             Hold();
 
-            // >>> AÑADIDO: recoger al INVENTARIO al presionar E mientras sostienes <<<
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Interact(); // usa tu misma lógica de Interact para agregar al inventario
+                Interact();
             }
         }
     }
@@ -56,7 +55,6 @@ public class Pickup : MonoBehaviour, IInteractable
     #region Interact
     public void Interact()
     {
-        // Asegura que hay un Inventory de jugador
         if (inventory == null)
         {
             inventory = FindFirstObjectByType<Inventory>();
@@ -64,21 +62,15 @@ public class Pickup : MonoBehaviour, IInteractable
 
         if (item == null)
         {
-            Debug.LogWarning("Pickup: 'item' no asignado en el objeto.");
             return;
         }
 
         if (inventory != null)
         {
-            // Si lo estás sosteniendo, suéltalo antes de destruir (mantiene tu flujo limpio)
             if (isHolding) Drop();
 
             inventory.AddItem(item);
             Destroy(gameObject);
-        }
-        else
-        {
-            Debug.LogWarning("No se encontro el PlayerInventory en la escena");
         }
     }
     #endregion
@@ -98,10 +90,6 @@ public class Pickup : MonoBehaviour, IInteractable
 
                 this.transform.SetParent(tempParent.transform);
             }
-        }
-        else
-        {
-            Debug.Log("No se encontro el TempParent en la escena");
         }
     }
 
@@ -124,11 +112,9 @@ public class Pickup : MonoBehaviour, IInteractable
             Drop();
         }
 
-        // FIX: Unity no tiene linearVelocity
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-        // Click derecho: lanzar y soltar (manteniendo tu lógica)
         if (Input.GetMouseButtonDown(1))
         {
             rb.AddForce(tempParent.transform.forward * throwForce);

@@ -12,11 +12,6 @@ public class Interactor : MonoBehaviour
     public Transform InteractorSource;
     public float InteractorRange;
 
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))

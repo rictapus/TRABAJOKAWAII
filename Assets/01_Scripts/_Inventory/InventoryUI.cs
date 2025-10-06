@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
-    [Header("Referencias")]
-    public Inventory inventory;          // Asigna en Inspector
-    public Transform uiInventoryParent;  // Contenedor (Grid/VerticalLayout en el Canvas)
-    public GameObject uiItemPrefab;      // Prefab con ItemUI (Image + Button)
+    #region Variables
+    public Inventory inventory;
+    public Transform uiInventoryParent;
+    public GameObject uiItemPrefab;
 
-    // clave -> GO de UI
     private readonly Dictionary<string, GameObject> inventoryUI = new Dictionary<string, GameObject>();
+    #endregion
 
+    #region Add & Remove
     public void AddUIItem(string inventoryItemName, Item item)
     {
         if (!uiItemPrefab || !uiInventoryParent)
@@ -30,12 +31,11 @@ public class InventoryUI : MonoBehaviour
 
         inventoryUI[inventoryItemName] = go;
 
-        // Pasa ambas acciones: eliminar (drop) y seleccionar (hover)
         itemUI.Initialize(
             inventoryItemName,
             item,
-            inventory.DropItem,     // click en el botón del ítem = dropear
-            inventory.SelectItem    // hover del ítem = seleccionarlo para soltar con Q
+            inventory.DropItem,    
+            inventory.SelectItem 
         );
     }
 
@@ -47,4 +47,5 @@ public class InventoryUI : MonoBehaviour
             inventoryUI.Remove(inventoryItemName);
         }
     }
+    #endregion
 }

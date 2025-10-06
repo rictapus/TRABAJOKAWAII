@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    [Header("UI")]
-    public InventoryUI ui; // Asigna en el Inspector
+    #region Variables
+    public InventoryUI ui;
+    public GameObject droppedItemPrefab;
 
-    [Header("Dropear")]
-    public GameObject droppedItemPrefab; // Prefab con DroppedItem + collider trigger
-
-    // Runtime
     private readonly Dictionary<string, Item> inventory = new Dictionary<string, Item>();
-    private readonly List<string> order = new List<string>(); // mantiene orden de agregado
-    private string selectedKey; // ítem seleccionado desde la UI (hover)
+    private readonly List<string> order = new List<string>(); 
+    private string selectedKey;
+    #endregion
 
+    #region Awake & Update
     void Awake()
     {
         if (!ui) ui = FindAnyObjectByType<InventoryUI>();
@@ -22,11 +21,12 @@ public class Inventory : MonoBehaviour
 
     void Update()
     {
-        // Soltar con Q: primero el seleccionado; si no, el último agregado
         if (Input.GetKeyDown(KeyCode.Q))
             DropSelectedOrLast();
     }
+    #endregion
 
+    #region Item Management
     public void AddItem(Item item)
     {
         if (item == null) return;
@@ -42,7 +42,6 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(string inventoryItemName)
     {
-        // Drop llamado por UI (click) o internamente
         if (!inventory.TryGetValue(inventoryItemName, out var item) || item == null)
             return;
 
@@ -64,7 +63,6 @@ public class Inventory : MonoBehaviour
         if (ui) ui.RemoveUIItem(inventoryItemName);
     }
 
-    // Llamado por la UI al pasar el mouse sobre un ítem
     public void SelectItem(string inventoryItemName)
     {
         if (inventory.ContainsKey(inventoryItemName))
@@ -86,4 +84,5 @@ public class Inventory : MonoBehaviour
             if (selectedKey == keyToDrop) selectedKey = null;
         }
     }
+    #endregion
 }
